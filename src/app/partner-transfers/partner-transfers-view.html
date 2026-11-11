@@ -1,0 +1,78 @@
+<section aria-labelledby="partner-transfers-heading">
+  <h2 id="partner-transfers-heading">Partner-to-partner transfers</h2>
+  <p class="note">
+    Moves you can make once points are in an airline or hotel program. Untick a route to leave it
+    out of the calculation. Routes that need status or a specific card start unticked.
+  </p>
+
+  <div class="toolbar">
+    <label class="inline-field">
+      Find a program
+      <input
+        #search
+        class="input"
+        type="search"
+        data-testid="routes-search"
+        [value]="query()"
+        (input)="query.set(search.value)"
+      />
+    </label>
+    <button
+      type="button"
+      class="button"
+      data-testid="routes-reset"
+      [disabled]="changed() === 0"
+      (click)="store.resetRoutes()"
+    >
+      Reset switches ({{ changed() }} changed)
+    </button>
+  </div>
+
+  <div class="table-wrap">
+    <table class="data-table" data-testid="routes-table">
+      <thead>
+        <tr>
+          <th scope="col">Use</th>
+          <th scope="col">From</th>
+          <th scope="col">To</th>
+          <th scope="col" class="num">Partner points per point</th>
+          <th scope="col">Bonus per block</th>
+          <th scope="col" class="num">Ratio used</th>
+          <th scope="col">Notes</th>
+          <th scope="col">Source</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.id) {
+          <tr [attr.data-testid]="'route-row-' + row.id" [class.muted]="!row.enabled">
+            <td>
+              <input
+                #box
+                type="checkbox"
+                [attr.data-testid]="'route-toggle-' + row.id"
+                [attr.aria-label]="'Use ' + row.from + ' to ' + row.to"
+                [checked]="row.enabled"
+                (change)="store.setRouteEnabled(row.id, box.checked)"
+              />
+            </td>
+            <th scope="row">{{ row.from }}</th>
+            <td>{{ row.to }}</td>
+            <td class="num">{{ row.ratio }}</td>
+            <td>{{ row.block }}</td>
+            <td class="num" data-testid="ratio-used">{{ row.ratioUsed }}</td>
+            <td>{{ row.note }}</td>
+            <td>
+              @if (row.sourceUrl; as url) {
+                <a [href]="url" target="_blank" rel="noopener noreferrer">{{ row.sourceLabel }}</a>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="8">No transfer matches “{{ query() }}”.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

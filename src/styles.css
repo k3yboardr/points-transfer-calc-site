@@ -1,0 +1,476 @@
+/*
+  The whole look of the site is in this file. Components have no stylesheets of their own.
+  Fonts are bundled with the site (npm packages), so the page never calls a font service.
+*/
+@import '@fontsource/ibm-plex-sans/latin-400.css';
+@import '@fontsource/ibm-plex-sans/latin-500.css';
+@import '@fontsource/ibm-plex-sans/latin-600.css';
+@import '@fontsource/ibm-plex-sans-condensed/latin-500.css';
+@import '@fontsource/ibm-plex-sans-condensed/latin-600.css';
+
+/*
+  The palette comes from the spreadsheet this site replaces, and keeps its meaning:
+  yellow = something you can edit, green = points added by partner moves, navy = headings.
+*/
+:root {
+  --ink: #14213d;
+  --ink-soft: #4a5673;
+  --paper: #ffffff;
+  --navy: #1f3864;
+  --band: #d9e1f2;
+  --band-soft: #eef2f9;
+  --rule: #b8c2d8;
+  --input: #fff2cc;
+  --input-edge: #7a6200;
+  --gain: #c6efce;
+  --gain-ink: #0b5d1e;
+  --danger: #a3211b;
+  --focus: #b45f06;
+  --font-text: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-condensed: 'IBM Plex Sans Condensed', 'IBM Plex Sans', system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 1rem/1.5 var(--font-text);
+  font-variant-numeric: tabular-nums;
+}
+
+h2 {
+  margin: 1.25rem 0 0.5rem;
+  font: 600 1.3125rem/1.2 var(--font-condensed);
+  color: var(--navy);
+}
+
+a {
+  color: var(--navy);
+  text-underline-offset: 0.15em;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Page frame: masthead, the tinted band that holds the inputs, the view switcher, the footer. */
+app-root {
+  display: block;
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+}
+
+.masthead h1 {
+  margin: 0;
+  font: 600 2.25rem/1.1 var(--font-condensed);
+  color: var(--navy);
+}
+
+.lede {
+  max-width: 42rem;
+  margin: 0.5rem 0 0;
+  font-size: 1.125rem;
+}
+
+.meta {
+  margin: 0.375rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+
+.inputs {
+  margin: 1.5rem 0 0;
+  padding: 0.25rem 1.25rem 1.25rem;
+  border-top: 3px solid var(--navy);
+  background: var(--band-soft);
+}
+
+.views {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.25rem;
+  margin: 2rem 0 1.25rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.view-tab {
+  margin: 0 0 -1px;
+  padding: 0.625rem 0.875rem;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: none;
+  color: var(--ink-soft);
+  font: 500 1.0625rem var(--font-condensed);
+  cursor: pointer;
+}
+
+.view-tab:hover {
+  color: var(--ink);
+}
+
+.view-tab.is-current {
+  border-bottom-color: var(--navy);
+  color: var(--navy);
+  font-weight: 600;
+}
+
+.colophon {
+  max-width: 42rem;
+  margin: 3rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+
+/* Text helpers */
+.note,
+.hint,
+.kind,
+.cell-sub {
+  color: var(--ink-soft);
+}
+
+.note {
+  max-width: 46rem;
+  margin: 0 0 0.75rem;
+  font-size: 0.9375rem;
+}
+
+.hint,
+.kind,
+.cell-sub {
+  display: block;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+.error {
+  margin: 0.5rem 0;
+  color: var(--danger);
+  font-weight: 500;
+}
+
+.notes {
+  max-width: 46rem;
+  padding-left: 1.25rem;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+}
+
+.gain {
+  display: inline-block;
+  margin-right: -0.375rem;
+  padding: 0 0.375rem;
+  border-radius: 3px;
+  background: var(--gain);
+  color: var(--gain-ink);
+  font-weight: 600;
+}
+
+.gain-text {
+  color: var(--gain-ink);
+  font-weight: 600;
+}
+
+.muted,
+.muted th {
+  color: var(--ink-soft);
+}
+
+/* Inputs: everything the user can edit is yellow, as in the spreadsheet. */
+.input {
+  min-height: 2.25rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--input-edge);
+  border-radius: 3px;
+  background: var(--input);
+  color: var(--ink);
+  font: inherit;
+}
+
+.input-number {
+  width: 100%;
+  text-align: right;
+}
+
+.input-short {
+  width: 6rem;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+  width: 1.0625rem;
+  height: 1.0625rem;
+  margin: 0;
+  accent-color: var(--navy);
+}
+
+.field label,
+.inline-field,
+legend {
+  font-weight: 500;
+  font-size: 0.9375rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.total {
+  margin: 0;
+  font-weight: 500;
+}
+
+.total output {
+  font: 600 1.3125rem var(--font-condensed);
+}
+
+.inline-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.balance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(9.5rem, 100%), 1fr));
+  gap: 0.75rem 1rem;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  gap: 0.75rem 1.5rem;
+}
+
+.restricted-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(24rem, 100%), 1fr));
+  gap: 0.25rem 1.5rem;
+}
+
+.choice {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.choice-wide {
+  margin-top: 1rem;
+}
+
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.1875rem 0;
+}
+
+.option input {
+  flex: none;
+  margin-top: 0.2rem;
+}
+
+.panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-top: 0.875rem;
+}
+
+.panel-actions .note {
+  margin: 0;
+}
+
+/* Buttons */
+.button {
+  min-height: 2.25rem;
+  padding: 0.25rem 0.875rem;
+  border: 1px solid var(--navy);
+  border-radius: 3px;
+  background: var(--paper);
+  color: var(--navy);
+  font: 500 0.9375rem var(--font-text);
+  cursor: pointer;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--band);
+}
+
+.button:disabled {
+  border-color: var(--rule);
+  color: var(--ink-soft);
+  cursor: default;
+}
+
+.button-primary {
+  background: var(--navy);
+  color: #ffffff;
+}
+
+.button-primary:hover:not(:disabled) {
+  background: var(--ink);
+}
+
+.button-danger {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.link-button {
+  padding: 0.125rem 0;
+  border: 0;
+  background: none;
+  color: var(--navy);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  cursor: pointer;
+}
+
+.segmented {
+  display: inline-flex;
+  align-self: flex-end;
+}
+
+.segmented button {
+  min-height: 2.25rem;
+  margin-left: -1px;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--navy);
+  background: var(--paper);
+  color: var(--navy);
+  font: 500 0.9375rem var(--font-text);
+  cursor: pointer;
+}
+
+.segmented button:first-child {
+  margin-left: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+.segmented button:last-child {
+  border-radius: 0 3px 3px 0;
+}
+
+.segmented button.is-current {
+  background: var(--navy);
+  color: #ffffff;
+}
+
+.toolbar,
+.bonus-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem 1rem;
+  margin: 0 0 0.875rem;
+}
+
+/*
+  Tables: a ledger. Navy header, right-aligned figures, thin rules.
+  Every table sits in a .table-wrap so a wide table scrolls sideways instead of the page.
+*/
+.table-wrap {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.4375rem 0.625rem;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+.data-table thead th {
+  border-bottom: 0;
+  background: var(--navy);
+  color: #ffffff;
+  font: 600 0.9375rem/1.25 var(--font-condensed);
+  vertical-align: bottom;
+}
+
+.data-table tbody th {
+  font-weight: 500;
+}
+
+.data-table .num {
+  text-align: right;
+}
+
+.data-table td.num {
+  white-space: nowrap;
+}
+
+.data-table thead th.num {
+  max-width: 7.5rem;
+}
+
+.data-table .strong {
+  font-weight: 600;
+}
+
+.data-table.matrix td {
+  min-width: 6.5rem;
+}
+
+.data-table .via {
+  background: var(--band-soft);
+}
+
+.cell-main {
+  display: block;
+  font-weight: 500;
+}
+
+.detail-row > td {
+  padding: 0 0 0.75rem 1.5rem;
+  background: var(--band-soft);
+}
+
+.data-table.nested thead th {
+  background: var(--band);
+  color: var(--ink);
+}
+
+.routes-cell {
+  min-width: 20rem;
+}
+
+.route-chip {
+  display: inline-block;
+  margin: 0 0.375rem 0.25rem 0;
+  padding: 0.0625rem 0.4375rem;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background: var(--paper);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 40rem) {
+  .data-table th,
+  .data-table td {
+    padding: 0.375rem 0.5rem;
+  }
+}

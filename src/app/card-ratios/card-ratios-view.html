@@ -1,0 +1,41 @@
+<section aria-labelledby="card-ratios-heading">
+  <h2 id="card-ratios-heading">Card transfer ratios</h2>
+  <p class="note">
+    Partner points you get for 1 card point. Blank = no direct transfer. A second line shows the
+    ratio used in the calculation when your card type or an active bonus changes it.
+  </p>
+  <div class="table-wrap">
+    <table class="data-table matrix" data-testid="card-ratios-table">
+      <thead>
+        <tr>
+          <th scope="col">Program</th>
+          <th scope="col">Type</th>
+          @for (card of cards; track card.id) {
+            <th scope="col">{{ card.name }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.id) {
+          <tr [attr.data-testid]="'ratio-row-' + row.id">
+            <th scope="row">{{ row.name }}</th>
+            <td>{{ row.kind }}</td>
+            @for (cell of row.cells; track cell.cardId) {
+              <td [attr.data-testid]="'ratio-' + row.id + '-' + cell.cardId">
+                <span class="cell-main">{{ cell.base }}</span>
+                @if (cell.used) {
+                  <span class="cell-sub" [class.gain-text]="cell.boosted">{{ cell.used }}</span>
+                }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <ul class="notes">
+    @for (note of notes; track note) {
+      <li>{{ note }}</li>
+    }
+  </ul>
+</section>

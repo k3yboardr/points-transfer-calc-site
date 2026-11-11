@@ -1,0 +1,29 @@
+<section aria-labelledby="sources-heading">
+  <h2 id="sources-heading">Sources</h2>
+  <p class="note">
+    Ratios, partner lists and built-in bonuses were checked on {{ checked }}. Programs change them
+    without much notice, so confirm in your card's own transfer page before moving points.
+  </p>
+  <div class="table-wrap">
+    <table class="data-table" data-testid="sources-table">
+      <thead>
+        <tr>
+          <th scope="col">Source</th>
+          <th scope="col">Used for</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (source of sources; track source.id) {
+          <tr>
+            <th scope="row">
+              <a [href]="source.url" target="_blank" rel="noopener noreferrer">{{
+                source.label
+              }}</a>
+            </th>
+            <td>{{ source.usedFor }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

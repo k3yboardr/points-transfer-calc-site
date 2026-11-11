@@ -1,0 +1,43 @@
+<section aria-labelledby="balances-heading">
+  <h2 id="balances-heading">Your points</h2>
+  <p class="note">Transferable points only: {{ currencies }}.</p>
+  <div class="balance-grid">
+    @for (field of fields(); track field.id) {
+      <div class="field">
+        <label [for]="'balance-' + field.id">{{ field.label }}</label>
+        <input
+          #box
+          class="input input-number"
+          type="number"
+          inputmode="numeric"
+          min="0"
+          step="1000"
+          placeholder="0"
+          [id]="'balance-' + field.id"
+          [attr.data-testid]="'balance-' + field.id"
+          [value]="field.value"
+          (input)="store.setBalance(field.id, box.value)"
+        />
+        <span class="hint">{{ field.echo }}</span>
+      </div>
+    }
+  </div>
+  <div class="panel-actions">
+    <p class="total">
+      All cards: <output data-testid="total-balance">{{ total() }}</output> points
+    </p>
+    @if (store.showingExampleBalances()) {
+      <p class="note" data-testid="example-note">
+        These are example balances. Replace them with yours. Your numbers stay in this browser.
+      </p>
+    }
+    <button
+      type="button"
+      class="button"
+      data-testid="clear-balances"
+      (click)="store.clearBalances()"
+    >
+      Clear balances
+    </button>
+  </div>
+</section>

@@ -1,0 +1,36 @@
+<section aria-labelledby="best-routes-heading">
+  <h2 id="best-routes-heading">Best route from each card</h2>
+  <p class="note">
+    Ratio = points in this program for 1 card point, using the best path with up to two partner
+    moves. “via X” = send card points to X, then move them here. “via X &gt; Y” = two moves.
+  </p>
+  <div class="table-wrap">
+    <table class="data-table matrix" data-testid="best-routes-table">
+      <thead>
+        <tr>
+          <th scope="col">Program</th>
+          @for (card of cards; track card.id) {
+            <th scope="col">{{ card.name }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.id) {
+          <tr [attr.data-testid]="'best-row-' + row.id">
+            <th scope="row">{{ row.name }}</th>
+            @for (cell of row.cells; track cell.cardId) {
+              <td
+                [class.via]="cell.viaPartner"
+                [class.muted]="cell.none"
+                [attr.data-testid]="'best-' + row.id + '-' + cell.cardId"
+              >
+                <span class="cell-main">{{ cell.ratio }}</span>
+                <span class="cell-sub">{{ cell.route }}</span>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

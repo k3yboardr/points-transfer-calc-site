@@ -1,0 +1,150 @@
+<section aria-labelledby="results-heading">
+  <h2 id="results-heading">Points each program could receive</h2>
+  <p class="note">
+    Each row assumes every card's whole balance goes to that one program, so rows are alternatives
+    and cannot be added together. Green marks points added by partner-to-partner moves.
+  </p>
+
+  <div class="toolbar">
+    <div class="segmented" role="group" aria-label="Program type">
+      <button
+        type="button"
+        data-testid="filter-all"
+        [class.is-current]="filter() === 'all'"
+        [attr.aria-pressed]="filter() === 'all'"
+        (click)="filter.set('all')"
+      >
+        All programs
+      </button>
+      <button
+        type="button"
+        data-testid="filter-airline"
+        [class.is-current]="filter() === 'airline'"
+        [attr.aria-pressed]="filter() === 'airline'"
+        (click)="filter.set('airline')"
+      >
+        Airlines
+      </button>
+      <button
+        type="button"
+        data-testid="filter-other"
+        [class.is-current]="filter() === 'other'"
+        [attr.aria-pressed]="filter() === 'other'"
+        (click)="filter.set('other')"
+      >
+        Hotels and rail
+      </button>
+    </div>
+    <label class="inline-field">
+      Find a program
+      <input
+        #search
+        class="input"
+        type="search"
+        data-testid="results-search"
+        [value]="query()"
+        (input)="query.set(search.value)"
+      />
+    </label>
+    <label class="inline-field">
+      Sort by
+      <select #sortBox class="input" data-testid="results-sort" (change)="setSort(sortBox.value)">
+        <option value="list" [selected]="sort() === 'list'">Program list</option>
+        <option value="max" [selected]="sort() === 'max'">Max with partner moves</option>
+        <option value="added" [selected]="sort() === 'added'">Added by partner moves</option>
+        <option value="direct" [selected]="sort() === 'direct'">Direct total</option>
+        <option value="name" [selected]="sort() === 'name'">Name</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="table-wrap">
+    <table class="data-table" data-testid="results-table">
+      <thead>
+        <tr>
+          <th scope="col">Program</th>
+          <th scope="col" class="num">Your cards that transfer directly</th>
+          <th scope="col" class="num">Direct total</th>
+          <th scope="col" class="num">Max with partner moves</th>
+          <th scope="col" class="num">Added by partner moves</th>
+          <th scope="col">Partner routes that add points</th>
+          <th scope="col">Per card</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.id) {
+          <tr [attr.data-testid]="'result-row-' + row.id">
+            <th scope="row">
+              {{ row.name }}
+              <span class="kind">{{ row.kind }}</span>
+            </th>
+            <td class="num" data-testid="direct-cards">{{ row.directCards }}</td>
+            <td class="num" data-testid="direct-total">{{ row.direct }}</td>
+            <td class="num strong" data-testid="max-total">{{ row.max }}</td>
+            <td class="num" data-testid="added">
+              <span [class.gain]="row.hasAdded">{{ row.added }}</span>
+            </td>
+            <td class="routes-cell" data-testid="routes">
+              @for (chip of row.routes; track chip.id) {
+                <span class="route-chip">
+                  <b>{{ chip.name }}</b> {{ chip.route }}
+                  <span class="gain-text">{{ chip.gain }}</span>
+                </span>
+              }
+            </td>
+            <td>
+              <button
+                type="button"
+                class="link-button"
+                [attr.data-testid]="'details-' + row.id"
+                [attr.aria-expanded]="row.open"
+                [attr.aria-label]="row.toggleLabel"
+                (click)="toggle(row.id)"
+              >
+                {{ row.open ? 'Hide' : 'Show' }}
+              </button>
+            </td>
+          </tr>
+          @if (row.open) {
+            <tr class="detail-row" [attr.data-testid]="'detail-' + row.id">
+              <td colspan="7">
+                <table class="data-table nested">
+                  <thead>
+                    <tr>
+                      <th scope="col">Card</th>
+                      <th scope="col" class="num">Your points</th>
+                      <th scope="col" class="num">Direct ratio</th>
+                      <th scope="col" class="num">Direct points</th>
+                      <th scope="col" class="num">Best ratio</th>
+                      <th scope="col">Best route</th>
+                      <th scope="col" class="num">Best points</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (card of row.cards; track card.id) {
+                      <tr [attr.data-testid]="'detail-' + row.id + '-' + card.id">
+                        <th scope="row">{{ card.name }}</th>
+                        <td class="num">{{ card.balance }}</td>
+                        <td class="num">{{ card.directRatio }}</td>
+                        <td class="num">{{ card.directPoints }}</td>
+                        <td class="num">{{ card.bestRatio }}</td>
+                        <td>{{ card.route }}</td>
+                        <td class="num">
+                          <span [class.gain]="card.adds">{{ card.bestPoints }}</span>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          }
+        } @empty {
+          <tr>
+            <td colspan="7" data-testid="results-empty">No program matches “{{ query() }}”.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

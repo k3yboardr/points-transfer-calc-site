@@ -1,0 +1,62 @@
+<header class="masthead">
+  <h1>Points transfer calculator</h1>
+  <p class="lede">
+    Enter your card points to see how many could reach each airline or hotel program, sent directly
+    or through partner-to-partner moves such as Chase to British Airways to Qatar.
+  </p>
+  <!-- prettier-ignore -->
+  <p class="meta">
+    Ratios checked {{ checked }}. Today is <span data-testid="today">{{ today() }}</span>. Transfers
+    cannot be undone, so confirm in your card's portal first.
+  </p>
+</header>
+
+<main>
+  <div class="inputs">
+    <app-balances-panel />
+    <app-settings-panel />
+  </div>
+
+  <nav class="views" aria-label="Views">
+    @for (item of views; track item.id) {
+      <button
+        type="button"
+        class="view-tab"
+        [class.is-current]="view() === item.id"
+        [attr.aria-current]="view() === item.id ? 'page' : null"
+        [attr.data-testid]="'tab-' + item.id"
+        (click)="view.set(item.id)"
+      >
+        {{ item.label }}
+      </button>
+    }
+  </nav>
+
+  @switch (view()) {
+    @case ('results') {
+      <app-results-view />
+    }
+    @case ('best-routes') {
+      <app-best-routes-view />
+    }
+    @case ('bonuses') {
+      <app-bonuses-view />
+    }
+    @case ('partner-transfers') {
+      <app-partner-transfers-view />
+    }
+    @case ('card-ratios') {
+      <app-card-ratios-view />
+    }
+    @case ('sources') {
+      <app-sources-view />
+    }
+  }
+</main>
+
+<footer>
+  <p class="colophon">
+    Not affiliated with any bank, airline or hotel. Ratios and bonuses change often. Everything you
+    enter is saved in this browser only and is never sent anywhere.
+  </p>
+</footer>

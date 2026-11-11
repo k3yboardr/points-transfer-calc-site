@@ -1,0 +1,122 @@
+<section aria-labelledby="bonuses-heading">
+  <h2 id="bonuses-heading">Card transfer bonuses</h2>
+  <p class="note">
+    A bonus adds extra points when you transfer from a card to one of its partners. It counts
+    through its end date. Add any bonus your card is offering, and remove the ones you do not want
+    counted.
+  </p>
+
+  <form class="bonus-form" novalidate (submit)="add($event)">
+    <label class="inline-field">
+      Card
+      <select #cardBox class="input" data-testid="bonus-card" (change)="chooseCard(cardBox.value)">
+        @for (card of cards; track card.id) {
+          <option [value]="card.id" [selected]="card.id === cardId()">{{ card.name }}</option>
+        }
+      </select>
+    </label>
+    <label class="inline-field">
+      Program
+      <select
+        #programBox
+        class="input"
+        data-testid="bonus-program"
+        (change)="programId.set(programBox.value)"
+      >
+        @for (option of programOptions(); track option.id) {
+          <option [value]="option.id" [selected]="option.id === programId()">
+            {{ option.name }}
+          </option>
+        }
+      </select>
+    </label>
+    <label class="inline-field">
+      Bonus %
+      <input
+        #percentBox
+        class="input input-number input-short"
+        type="number"
+        inputmode="decimal"
+        min="1"
+        step="1"
+        placeholder="30"
+        data-testid="bonus-percent"
+        [value]="percent()"
+        (input)="percent.set(percentBox.value)"
+      />
+    </label>
+    <label class="inline-field">
+      Last day (optional)
+      <input
+        #endBox
+        class="input"
+        type="date"
+        data-testid="bonus-end"
+        [value]="endDate()"
+        (input)="endDate.set(endBox.value)"
+      />
+    </label>
+    <button type="submit" class="button button-primary" data-testid="bonus-add">Add bonus</button>
+  </form>
+  @if (error(); as message) {
+    <p class="error" role="alert" data-testid="bonus-error">{{ message }}</p>
+  }
+
+  <div class="table-wrap">
+    <table class="data-table" data-testid="bonuses-table">
+      <thead>
+        <tr>
+          <th scope="col">Card</th>
+          <th scope="col">Program</th>
+          <th scope="col" class="num">Bonus</th>
+          <th scope="col">Last day</th>
+          <th scope="col">Status</th>
+          <th scope="col">Source</th>
+          <th scope="col">Remove</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.id) {
+          <tr [attr.data-testid]="'bonus-row-' + row.id" [class.muted]="!row.counted">
+            <th scope="row">{{ row.card }}</th>
+            <td>{{ row.program }}</td>
+            <td class="num">{{ row.bonus }}</td>
+            <td>{{ row.lastDay }}</td>
+            <td data-testid="bonus-status">{{ row.status }}</td>
+            <td>
+              @if (row.sourceUrl; as url) {
+                <a [href]="url" target="_blank" rel="noopener noreferrer">{{ row.sourceLabel }}</a>
+              } @else {
+                {{ row.sourceLabel }}
+              }
+            </td>
+            <td>
+              <button
+                type="button"
+                class="link-button"
+                [attr.data-testid]="'bonus-remove-' + row.id"
+                [attr.aria-label]="row.removeLabel"
+                (click)="store.removeBonus(row.id)"
+              >
+                Remove
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="7" data-testid="bonuses-empty">
+              No bonuses listed. Add one above, or bring back the built-in list.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel-actions">
+    <button type="button" class="button" data-testid="bonus-reset" (click)="store.resetBonuses()">
+      Bring back the built-in list
+    </button>
+    <p class="note">This also removes bonuses you added.</p>
+  </div>
+</section>

@@ -1,0 +1,132 @@
+<section aria-labelledby="settings-heading">
+  <h2 id="settings-heading">Settings</h2>
+  <div class="settings-grid">
+    <fieldset class="choice">
+      <legend>Chase card</legend>
+      <label class="option">
+        <input
+          type="radio"
+          name="chase-card"
+          data-testid="setting-chase-reserve"
+          [checked]="settings().chaseCard === 'reserve'"
+          (change)="store.setChaseCard('reserve')"
+        />
+        Sapphire Reserve
+      </label>
+      <label class="option">
+        <input
+          type="radio"
+          name="chase-card"
+          data-testid="setting-chase-preferred"
+          [checked]="settings().chaseCard === 'preferred'"
+          (change)="store.setChaseCard('preferred')"
+        />
+        Sapphire Preferred or Ink
+      </label>
+      <p class="hint">Reserve = 1:1 to Hyatt. Preferred or Ink = 4:3 (since Oct 1, 2026).</p>
+    </fieldset>
+
+    <fieldset class="choice">
+      <legend>Citi card</legend>
+      <label class="option">
+        <input
+          type="radio"
+          name="citi-card"
+          data-testid="setting-citi-premium"
+          [checked]="settings().citiTier === 'premium'"
+          (change)="store.setCitiTier('premium')"
+        />
+        Strata Premier or Strata Elite
+      </label>
+      <label class="option">
+        <input
+          type="radio"
+          name="citi-card"
+          data-testid="setting-citi-other"
+          [checked]="settings().citiTier === 'other'"
+          (change)="store.setCitiTier('other')"
+        />
+        Other Citi card
+      </label>
+      <p class="hint">Other Citi cards get 70% of the Strata ratios.</p>
+    </fieldset>
+
+    <div class="choice">
+      <label class="option">
+        <input
+          #countBonuses
+          type="checkbox"
+          data-testid="setting-count-bonuses"
+          [checked]="settings().countBonuses"
+          (change)="store.updateSettings({ countBonuses: countBonuses.checked })"
+        />
+        Count limited-time transfer bonuses
+      </label>
+      <p class="hint">
+        Bonuses are listed under Transfer bonuses and stop counting after their end date.
+      </p>
+    </div>
+
+    <div class="choice">
+      <label class="option">
+        <input
+          #countBlockBonuses
+          type="checkbox"
+          data-testid="setting-count-block-bonuses"
+          [checked]="settings().countBlockBonuses"
+          (change)="store.updateSettings({ countBlockBonuses: countBlockBonuses.checked })"
+        />
+        Count Marriott and Hyatt block bonuses
+      </label>
+      <p class="hint">Assumes full 60,000-point Marriott or 50,000-point Hyatt transfers.</p>
+    </div>
+  </div>
+
+  <fieldset class="choice choice-wide">
+    <legend>Routes that need status or a specific card</legend>
+    <div class="restricted-grid">
+      @for (route of restrictedRoutes(); track route.id) {
+        <label class="option">
+          <input
+            #box
+            type="checkbox"
+            [attr.data-testid]="'restricted-' + route.id"
+            [checked]="route.enabled"
+            (change)="store.setRouteEnabled(route.id, box.checked)"
+          />
+          <span>
+            {{ route.label }}
+            <span class="hint">{{ route.note }}</span>
+          </span>
+        </label>
+      }
+    </div>
+    <p class="hint">Every other partner transfer has its own switch under Partner transfers.</p>
+  </fieldset>
+
+  <div class="panel-actions">
+    @if (confirmingReset()) {
+      <p class="note" role="alert">
+        Reset balances, settings, bonuses and route switches to their starting values?
+      </p>
+      <button
+        type="button"
+        class="button button-danger"
+        data-testid="reset-all-confirm"
+        (click)="resetEverything()"
+      >
+        Yes, reset everything
+      </button>
+      <button type="button" class="button" (click)="confirmingReset.set(false)">Cancel</button>
+    } @else {
+      <button
+        type="button"
+        class="button"
+        data-testid="reset-all"
+        (click)="confirmingReset.set(true)"
+      >
+        Reset everything
+      </button>
+    }
+  </div>
+</section>
